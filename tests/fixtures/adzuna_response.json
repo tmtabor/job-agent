@@ -1,0 +1,26 @@
+{
+  "results": [
+    {
+      "id": "1234567890",
+      "title": "Staff Machine Learning Engineer",
+      "company": {"display_name": "Fictional Adzuna Co."},
+      "location": {"display_name": "Remote"},
+      "description": "Build ML infrastructure and agentic pipelines for our platform.",
+      "redirect_url": "https://www.adzuna.com/details/1234567890",
+      "salary_min": 300000,
+      "salary_max": 350000,
+      "created": "2026-07-01T00:00:00Z",
+      "category": {"label": "IT Jobs"}
+    },
+    {
+      "id": "1234567891",
+      "title": "Warehouse Associate",
+      "company": {"display_name": "Fictional Logistics Co."},
+      "location": {"display_name": "Omaha, NE"},
+      "description": "Pick and pack orders in our fulfillment center.",
+      "redirect_url": "https://www.adzuna.com/details/1234567891",
+      "created": "2026-07-02T00:00:00Z",
+      "category": {"label": "Logistics Jobs"}
+    }
+  ]
+}

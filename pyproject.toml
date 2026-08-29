@@ -1,0 +1,52 @@
+[project]
+name = "job-agent"
+version = "0.1.0"
+description = "Daily job-scanning agent: fetches postings, filters/scores with an LLM, emails a ranked digest"
+license = "BSD-3-Clause"
+requires-python = ">=3.13"
+dependencies = [
+    "pydantic-ai>=2.1.0",
+    "pydantic-settings>=2.0",
+    "logfire>=3.0",
+    "python-dotenv>=1.0",
+    "httpx>=0.28.1",
+    "pyyaml>=6.0.3",
+    "python-jobspy>=1.1.82",
+    "pandas>=2.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "pydantic-evals>=2.1.0",
+    "ruff>=0.8",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+# Session-scoped, not the default "function": pydantic-ai's Google model
+# caches a persistent httpx client across calls. With a fresh event loop per
+# test function (the default), a second real eval test in the same session
+# hits "RuntimeError: Event loop is closed" trying to reuse a connection
+# bound to the first test's already-closed loop. Confirmed 2026-07-24
+# running evals/test_llm_judge.py's two tests back to back. TestModel-backed
+# unit tests never make a real connection, so this has no effect on them.
+asyncio_default_test_loop_scope = "session"
+markers = [
+    "eval: marks tests as evals (require an API key; run with -m eval, skipped by default)",
+    "live: hits real external APIs over the network, no LLM calls (run with -m live, skipped by default)",
+]
+addopts = "-m 'not eval and not live'"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["agent"]
+combine-as-imports = true

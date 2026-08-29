@@ -1,0 +1,20 @@
+[
+  {
+    "id": "abc-123",
+    "text": "Staff Software Engineer",
+    "categories": {"team": "Engineering", "location": "Remote", "commitment": "Full-time"},
+    "descriptionPlain": "Own our LLM agent orchestration layer end to end.",
+    "hostedUrl": "https://jobs.lever.co/fictionalco/abc-123",
+    "createdAt": 1751328000000,
+    "workplaceType": "remote"
+  },
+  {
+    "id": "def-456",
+    "text": "Account Executive",
+    "categories": {"team": "Sales", "location": "New York, NY", "commitment": "Full-time"},
+    "descriptionPlain": "Close deals with enterprise customers.",
+    "hostedUrl": "https://jobs.lever.co/fictionalco/def-456",
+    "createdAt": 1751414400000,
+    "workplaceType": "on-site"
+  }
+]

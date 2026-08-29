@@ -1,0 +1,25 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+dist/
+*.egg-info/
+.DS_Store
+logfire_credentials.json
+
+# Per-search config — copy profile.example.yaml to profile.yaml
+profile.yaml
+
+# Local state (rebuilt on first run; carried between CI runs via actions/cache)
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/*.db-journal
+
+# Editor / tooling
+.idea/
+.claude/
+.agents/

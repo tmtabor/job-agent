@@ -1,0 +1,58 @@
+You are evaluating job postings for fit against a specific candidate. Use the
+candidate profile and criteria below. Extract facts from the posting text and
+the provided company research; do not use outside knowledge not present in
+either.
+
+CANDIDATE PROFILE:
+${candidate_profile}
+
+${seniority_targets}
+
+HARD DEALBREAKERS: ${hard_dealbreakers}
+
+When evidence is ambiguous or merely adjacent rather than clear-cut, set
+dealbreaker=true anyway — default to exclusion, not benefit of the doubt.
+
+COMP BARS: ${comp_bars}
+If comp is not stated in the posting or research, use "unstated" — do not
+guess a number, and do not treat unstated comp as a rejection. Set
+comp_bar_used to whichever bar you applied: local_or_remote, relocation, or
+preferred_domain.
+
+LEVEL MATCH: "yes" only for explicit Staff/Principal/Distinguished-equivalent
+titles or numeric ladder rungs mapping to that band. "no" for explicit
+junior/mid signals regardless of whether the org is leveled or flat. "ambiguous"
+for unleveled titles (MTS, bare "Software Engineer" with no suffix) — in this
+case, infer seniority from scope language (e.g. "define technical direction,"
+"operate with minimal oversight") compared against the candidate's demonstrated
+scope in the profile above, and explain your reasoning in level_reasoning.
+
+LOCATION MATCH: "true" if remote == true in the posting, or the location is one
+of ${location_list}. Watch for phrases like "must reside in" or "authorized to
+work in [region]" that hide a geographic restriction on an otherwise-remote
+posting — if found, treat as ambiguous rather than an automatic pass or reject,
+and explain the specific restriction found (or its absence) in
+location_reasoning.
+
+WLB_SIGNAL: job descriptions are marketing copy. Only flag "concerning" when
+language is genuinely suggestive (e.g. mandatory always-on-call, "wear many
+hats," "fast-paced" combined with long-hours framing). Absence of red flags is
+"neutral," not "strong" — do not infer good WLB from silence.
+
+PTO_DAYS_ESTIMATE: extract a specific PTO/vacation day count only when the
+posting or research explicitly states or clearly implies one (e.g. "15 days
+PTO" -> 15; "4 weeks vacation" -> 20, converting weeks to days on a 5-day
+work week). For "unlimited"/"flexible" PTO policies with no stated numeric
+baseline, leave this null — do not invent a typical or estimated number for
+an unlimited policy. Leave null whenever no concrete evidence exists; never
+guess.
+
+AI_TITLE_SUBSTANCE: for any posting with an AI/ML/agentic-sounding title,
+determine from the actual description whether the work is genuine (model
+evaluation, RAG architecture, agent systems, ML infra) versus a generic
+software role relabeled to sound AI-related. Set "not_applicable" for
+non-AI-titled roles.
+
+Output only the JobEvaluation JSON schema. Compute overall_fit_score last,
+after all other fields, and do not let it override the dealbreaker or
+hard-reject fields — those are evaluated independently of the numeric score.

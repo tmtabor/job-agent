@@ -1,0 +1,44 @@
+{
+  "jobs": [
+    {
+      "id": "ashby-job-1",
+      "title": "Applied AI Engineer",
+      "location": "Remote - US",
+      "isRemote": true,
+      "workplaceType": "Remote",
+      "descriptionPlain": "Build RAG pipelines and evaluate LLM agent behavior in production.",
+      "department": "Engineering",
+      "jobUrl": "https://jobs.ashbyhq.com/fictionalco/ashby-job-1",
+      "applyUrl": "https://jobs.ashbyhq.com/fictionalco/ashby-job-1/application",
+      "publishedAt": "2026-07-01T00:00:00.000Z",
+      "compensation": {
+        "compensationTierSummary": "$300,000 - $340,000 base"
+      }
+    },
+    {
+      "id": "ashby-job-2",
+      "title": "Recruiting Coordinator",
+      "location": "San Francisco, CA",
+      "isRemote": false,
+      "workplaceType": "OnSite",
+      "descriptionPlain": "Coordinate interview scheduling for the recruiting team.",
+      "department": "People",
+      "jobUrl": "https://jobs.ashbyhq.com/fictionalco/ashby-job-2",
+      "applyUrl": "https://jobs.ashbyhq.com/fictionalco/ashby-job-2/application",
+      "publishedAt": "2026-07-02T00:00:00.000Z",
+      "compensation": {}
+    },
+    {
+      "title": "Contract Recruiter (no id field)",
+      "location": "Remote - US",
+      "isRemote": false,
+      "workplaceType": "Remote",
+      "descriptionPlain": "Some boards omit the id field entirely per Ashby's own docs.",
+      "department": "People",
+      "jobUrl": "https://jobs.ashbyhq.com/fictionalco/no-id-job",
+      "applyUrl": "https://jobs.ashbyhq.com/fictionalco/no-id-job/application",
+      "publishedAt": "2026-07-03T00:00:00.000Z",
+      "compensation": {}
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+name: keepalive
+
+# GitHub disables a scheduled workflow after 60 days with no commits to the
+# repo (only commits reset the timer — not runs, issues, or releases). The
+# daily scan no longer commits anything, so this pushes one empty commit a
+# month to keep daily-job-scan.yml from being auto-disabled.
+
+on:
+  schedule:
+    - cron: "0 6 1 * *" # 06:00 UTC on the 1st of each month
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Push empty commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit --allow-empty -m "chore: keepalive [skip ci]"
+          git push

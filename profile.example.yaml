@@ -1,0 +1,164 @@
+# Example candidate profile — a fictional stand-in. Copy this file to
+# profile.yaml and rewrite every field for your own search:
+#
+#   cp profile.example.yaml profile.yaml
+#
+# profile.yaml is gitignored. The pipeline loads it once at startup and fails
+# immediately if it is missing or malformed. The test and eval suites bind to
+# THIS example file, so keep it internally consistent (the eval fixtures in
+# evals/fixtures/jobs.json assume the comp bars and dealbreakers below).
+
+# The résumé summary the scoring model reads. Keep it to a short paragraph —
+# it is sent on every scoring call. Facts only; the model extracts fit signals
+# from it against each posting.
+candidate_summary: >
+  Senior Software Engineer with ~12 years of backend and distributed-systems
+  experience. Built data-pipeline and geospatial infrastructure at a logistics
+  SaaS company and, before that, at a civic-technology nonprofit. Strong in
+  Python and Go, streaming systems, and API design. Earlier career in
+  low-latency trading-systems engineering — this is NOT cryptocurrency
+  experience and must not be treated as relevant to, or mitigating for, the
+  crypto dealbreaker below.
+
+# One or two sentences on the level/band being targeted. Used by the LEVEL
+# MATCH rubric in the system prompt.
+seniority_targets: >
+  Senior or Staff-level IC roles, or equivalent unleveled titles (e.g. Member
+  of Technical Staff) at genuinely flat organizations. Not interested in
+  management tracks.
+
+# Hard exclusions. A company that itself engages in or profits from any of
+# these is dropped entirely. Keep this list short and categorical.
+dealbreakers:
+  - Defense
+  - Surveillance
+  - Crypto
+
+# The nuance the scoring and company-research prompts apply to the list above:
+# what counts, what doesn't, and which way to lean when evidence is thin.
+dealbreaker_notes: >
+  Includes strongly adjacent business lines even when the company's primary
+  description doesn't mention them. But the company being evaluated must
+  itself actually engage in or profit from the work: merely researching,
+  writing about, or holding policies that discuss these topics does not count
+  (an AI lab's own safety research into misuse risk is not a defense or
+  surveillance business), and neither does sharing a distant corporate parent
+  or an unrelated sibling business unit with some government contract
+  elsewhere in a large conglomerate.
+
+# Domains that clear a lower comp bar (see preferred_domain_floor_usd) because
+# the work itself is worth more than the money.
+preferred_domains:
+  - biotech
+  - tech for good
+  - education
+  - creator economy
+
+# Hard compensation floors in USD. A role below the applicable bar is rejected
+# in post-processing regardless of other fit. "Unstated" comp is not a
+# rejection — the model is told to record it as unstated, not guess.
+comp_bars:
+  local_or_remote_usd: 180000    # local (see preferred_locations) or fully remote
+  relocation_usd: 220000         # if relocation to a relocation_cities metro is required
+  preferred_domain_floor_usd: 150000  # hard floor for preferred_domains roles
+
+# Metros worth relocating for (triggers the higher relocation comp bar).
+relocation_cities:
+  - Bay Area
+  - Seattle
+  - Austin
+
+# Human-readable location list shown to the scoring model's LOCATION MATCH
+# rubric. Remote is always acceptable; these are the acceptable on-site metros.
+preferred_locations:
+  - San Diego
+  - Bay Area
+  - Seattle
+  - Austin
+
+# Regex fragments for the no-LLM Tier 1 pass. Each list is OR-joined and
+# compiled case-insensitively. Fragments, not full patterns — word boundaries
+# and the (?i) flag are added by the compiler.
+tier1:
+  # Titles that count as a role-family hit on their own.
+  title_patterns:
+    - \bsoftware\s+engineer\b
+    - \b(ml|machine\s+learning)\s+engineer\b
+    - \bapplied\s+ai\s+engineer\b
+    - \bai\s+engineer\b
+    - \b(staff|principal|senior\s+staff)(\s+software)?\s+engineer\b
+    - \bmember\s+of\s+technical\s+staff\b
+    - \bmts\b
+    - \bforward[- ]deployed\s+engineer\b
+    - \bbackend\s+engineer\b
+    - \bplatform\s+engineer\b
+    - \bdistributed\s+systems\s+engineer\b
+  # Body-text vocabulary that rescues a posting with a generic title.
+  # Deliberately excludes bare "agent"/"agentic"/"llm" — those appear in the
+  # marketing boilerplate of every AI company regardless of the role.
+  description_keywords:
+    - python
+    - golang
+    - distributed\s+systems
+    - streaming\s+systems
+    - kafka
+    - rag
+    - retrieval[- ]augmented
+    - ml\s+infra(structure)?
+    - machine\s+learning\s+infra(structure)?
+    - vllm
+    - model\s+context\s+protocol
+  # Acceptable on-site metros, expanded to the tech-hub cities within each.
+  preferred_location_patterns:
+    - bay\s+area
+    - san\s+francisco
+    - \bsf\b
+    - oakland
+    - san\s+jose
+    - silicon\s+valley
+    - palo\s+alto
+    - mountain\s+view
+    - menlo\s+park
+    - redwood\s+city
+    - sunnyvale
+    - berkeley
+    - san\s+mateo
+    - south\s+san\s+francisco
+    - seattle
+    - bellevue
+    - redmond
+    - austin
+    - san\s+diego
+    - la\s+jolla
+    - carlsbad
+
+# Search parameters for the breadth/aggregator sources.
+source_queries:
+  jobspy_search_term: senior software engineer
+  jobspy_location: Remote
+  adzuna_query: software engineer
+  adzuna_category: it-jobs
+
+# Hand-seeded companies to track directly (Greenhouse/Lever/Ashby have no
+# discovery endpoint). Self-expansion grows the effective list at runtime from
+# companies seen via Adzuna/JobSpy — those discoveries persist in the state DB,
+# not back into this file. Replace these with the companies you actually want
+# tracked; the board tokens below are public and included only as format
+# examples.
+seed_companies:
+  - name: Anthropic
+    ats_type: greenhouse
+    board_token: anthropic
+    domain: anthropic.com
+  - name: ClickUp
+    ats_type: ashby
+    board_token: clickup
+    domain: clickup.com
+  - name: Ramp
+    ats_type: ashby
+    board_token: ramp
+    domain: ramp.com
+  - name: Discord
+    ats_type: greenhouse
+    board_token: discord
+    domain: discord.com

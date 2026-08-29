@@ -1,0 +1,22 @@
+{
+  "jobs": [
+    {
+      "id": 4567890,
+      "title": "Staff Software Engineer, Agent Platform",
+      "updated_at": "2026-07-01T12:00:00-04:00",
+      "location": {"name": "Remote - US"},
+      "content": "&lt;p&gt;Build our &lt;strong&gt;agentic AI&lt;/strong&gt; platform using Python and RAG.&lt;/p&gt;",
+      "absolute_url": "https://boards.greenhouse.io/fictionalco/jobs/4567890",
+      "departments": [{"name": "Engineering"}]
+    },
+    {
+      "id": 4567891,
+      "title": "Office Manager",
+      "updated_at": "2026-07-02T09:00:00-04:00",
+      "location": {"name": "San Diego, CA"},
+      "content": "&lt;p&gt;Manage the front desk and coordinate office events.&lt;/p&gt;",
+      "absolute_url": "https://boards.greenhouse.io/fictionalco/jobs/4567891",
+      "departments": [{"name": "Operations"}]
+    }
+  ]
+}

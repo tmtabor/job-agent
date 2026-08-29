@@ -1,0 +1,62 @@
+name: daily-job-scan
+
+on:
+  schedule:
+    - cron: "0 13 * * *" # ~morning PT; best-effort timing, some delay expected
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      # Python version comes from .python-version
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      # State (dedupe history, cached company research, discovered companies)
+      # round-trips between runs via the Actions cache — it is NOT committed
+      # back to the repo. The save step below always writes a fresh key; this
+      # restore always pulls the newest prior entry via the prefix.
+      - name: Restore pipeline state
+        uses: actions/cache/restore@v4
+        with:
+          path: data/seen_jobs.db
+          key: pipeline-state-
+          restore-keys: |
+            pipeline-state-
+
+      - name: Write profile.yaml
+        env:
+          PROFILE_YAML_B64: ${{ secrets.PROFILE_YAML_B64 }}
+        run: printf '%s' "$PROFILE_YAML_B64" | base64 -d > profile.yaml
+
+      - name: Run pipeline
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_API_KEY: ${{ secrets.ADZUNA_API_KEY }}
+          POSTMARK_SERVER_TOKEN: ${{ secrets.POSTMARK_SERVER_TOKEN }}
+          AGENT_EMAIL_FROM: ${{ secrets.AGENT_EMAIL_FROM }}
+          AGENT_EMAIL_TO: ${{ secrets.AGENT_EMAIL_TO }}
+          AGENT_MODEL: ${{ secrets.AGENT_MODEL }}
+          LOGFIRE_TOKEN: ${{ secrets.LOGFIRE_TOKEN }}
+        run: uv run python scripts/run_pipeline.py
+
+      - name: Save pipeline state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/seen_jobs.db
+          key: pipeline-state-${{ github.run_id }}-${{ github.run_attempt }}

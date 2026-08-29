@@ -1,0 +1,34 @@
+[
+  {
+    "id": "in-abc123",
+    "site": "indeed",
+    "job_url": "https://www.indeed.com/viewjob?jk=abc123",
+    "job_url_direct": "https://careers.example.com/jobs/abc123",
+    "title": "Staff Software Engineer",
+    "company": "Example Co",
+    "location": "Remote, US",
+    "date_posted": "2026-07-20",
+    "interval": "yearly",
+    "min_amount": 300000,
+    "max_amount": 340000,
+    "currency": "USD",
+    "is_remote": true,
+    "description": "Build agentic AI systems in Python."
+  },
+  {
+    "id": "li-xyz789",
+    "site": "linkedin",
+    "job_url": "https://www.linkedin.com/jobs/view/xyz789",
+    "job_url_direct": null,
+    "title": "Office Manager",
+    "company": null,
+    "location": "Omaha, NE",
+    "date_posted": "2026-07-21",
+    "interval": null,
+    "min_amount": null,
+    "max_amount": null,
+    "currency": null,
+    "is_remote": false,
+    "description": "Manage the front desk and coordinate office events."
+  }
+]

@@ -1,0 +1,211 @@
+[
+  {
+    "name": "clear_pass",
+    "inputs": {
+      "posting_title": "Staff Software Engineer, Agent Infrastructure",
+      "posting_company": "Fictional Agentic Systems Inc.",
+      "posting_location": "Remote (US)",
+      "posting_remote": true,
+      "posting_description": "We are hiring a Staff Software Engineer to define technical direction for our multi-agent orchestration platform, operating with minimal oversight across the team. You will architect our RAG pipeline and MCP tool infrastructure.",
+      "posting_compensation": "$205,000 - $235,000 base salary",
+      "company_research_text": "No reliable recent information found.",
+      "tier1_result": "pass"
+    },
+    "expected": {
+      "dealbreaker": false,
+      "comp_meets_bar": "yes",
+      "level_match": "yes",
+      "location_match": true
+    }
+  },
+  {
+    "name": "hospital_it_department_ai_role",
+    "inputs": {
+      "posting_title": "Machine Learning Engineer - Clinical Data Platform",
+      "posting_company": "Fictional Regional Health System",
+      "posting_location": "Remote (US)",
+      "posting_remote": true,
+      "posting_description": "Department: IT Services. Build and maintain machine learning models and RAG-based retrieval systems for clinical decision support. Requires Python, distributed systems experience, and experience deploying LLM-based agents in production.",
+      "posting_compensation": "$200,000 - $230,000",
+      "company_research_text": "No reliable recent information found.",
+      "tier1_result": "pass"
+    },
+    "expected": {
+      "dealbreaker": false,
+      "role_family_match": "yes",
+      "domain": "preferred"
+    }
+  },
+  {
+    "name": "unleveled_mts_flat_org",
+    "inputs": {
+      "posting_title": "Member of Technical Staff",
+      "posting_company": "Fictional Flat Org Labs",
+      "posting_location": "Remote (US)",
+      "posting_remote": true,
+      "posting_description": "We are a flat organization with no formal levels. As a Member of Technical Staff you will define technical direction for a core product area and operate with minimal oversight, driving decisions end to end.",
+      "posting_compensation": "$210,000 base, equity",
+      "company_research_text": "No reliable recent information found.",
+      "tier1_result": "pass"
+    },
+    "expected": {
+      "dealbreaker": false,
+      "level_match": "ambiguous"
+    }
+  },
+  {
+    "name": "crypto_trading_adjacent_skill_match",
+    "inputs": {
+      "posting_title": "Senior Software Engineer, Trading Systems",
+      "posting_company": "Fictional Digital Asset Trading Co.",
+      "posting_location": "Remote (US)",
+      "posting_remote": true,
+      "posting_description": "Build low-latency trading infrastructure for our cryptocurrency exchange and market-making desk. Prior experience with low-latency trading platforms, order matching engines, and market data feeds is highly relevant background for this role.",
+      "posting_compensation": "$200,000 - $240,000",
+      "company_research_text": "Fictional Digital Asset Trading Co. operates a cryptocurrency exchange and proprietary crypto market-making desk.",
+      "tier1_result": "pass"
+    },
+    "expected": {
+      "dealbreaker": true,
+      "domain": "dealbreaker"
+    }
+  },
+  {
+    "name": "ai_safety_research_not_a_dealbreaker",
+    "inputs": {
+      "posting_title": "Research Engineer, Alignment",
+      "posting_company": "Fictional AI Safety Lab",
+      "posting_location": "Remote (US)",
+      "posting_remote": true,
+      "posting_description": "Join our alignment research team studying agentic misalignment and safety risks in advanced AI systems. Our published usage policies discuss responsible use in sensitive contexts, including government and defense use cases, as part of our broader AI safety mission.",
+      "posting_compensation": "$200,000 - $240,000",
+      "company_research_text": "Fictional AI Safety Lab is an AI research company. It publishes research on AI safety and has documented usage policies covering government and defense contexts as part of responsible-use guidance.",
+      "tier1_result": "pass"
+    },
+    "expected": {
+      "dealbreaker": false,
+      "domain": "neutral"
+    }
+  },
+  {
+    "name": "bundled_total_comp",
+    "inputs": {
+      "posting_title": "Staff Engineer, Platform",
+      "posting_company": "Fictional Total Comp Co.",
+      "posting_location": "Remote (US)",
+      "posting_remote": true,
+      "posting_description": "Own the technical direction of our core platform team. Operate with minimal oversight and mentor senior engineers.",
+      "posting_compensation": "Total compensation up to $250,000 (base + bonus + equity blended)",
+      "company_research_text": "No reliable recent information found.",
+      "tier1_result": "pass"
+    },
+    "expected": {
+      "dealbreaker": false,
+      "comp_meets_bar": "yes"
+    }
+  },
+  {
+    "name": "clean_base_only_comp",
+    "inputs": {
+      "posting_title": "Staff Engineer, Platform",
+      "posting_company": "Fictional Clean Comp Co.",
+      "posting_location": "Remote (US)",
+      "posting_remote": true,
+      "posting_description": "Own the technical direction of our core platform team. Operate with minimal oversight and mentor senior engineers.",
+      "posting_compensation": "$185,000 - $210,000 base salary only, equity and bonus separate",
+      "company_research_text": "No reliable recent information found.",
+      "tier1_result": "pass"
+    },
+    "expected": {
+      "dealbreaker": false,
+      "comp_meets_bar": "yes"
+    }
+  },
+  {
+    "name": "domain_preferred_below_floor",
+    "inputs": {
+      "posting_title": "Senior Software Engineer, Genomics Platform",
+      "posting_company": "Fictional Biotech Nonprofit",
+      "posting_location": "Remote (US)",
+      "posting_remote": true,
+      "posting_description": "Build research software used by genomics researchers. A mission-driven biotech nonprofit doing tech-for-good work in the life sciences.",
+      "posting_compensation": "$120,000 - $140,000",
+      "company_research_text": "No reliable recent information found.",
+      "tier1_result": "pass"
+    },
+    "expected": {
+      "dealbreaker": false,
+      "domain": "preferred",
+      "comp_meets_bar": "no"
+    }
+  },
+  {
+    "name": "flexible_pto_research_conflict",
+    "inputs": {
+      "posting_title": "Staff Software Engineer",
+      "posting_company": "Fictional Unlimited PTO Co.",
+      "posting_location": "Remote (US)",
+      "posting_remote": true,
+      "posting_description": "We offer flexible PTO and trust employees to manage their own time off. Define technical direction for our infrastructure team.",
+      "posting_compensation": "$200,000 - $235,000",
+      "company_research_text": "Multiple former-employee reviews report that despite the flexible PTO policy, average time off taken is well below industry norms and employees report unspoken pressure not to take extended leave.",
+      "tier1_result": "pass"
+    },
+    "expected": {
+      "dealbreaker": false
+    },
+    "expected_non_null": ["company_research_conflict"]
+  },
+  {
+    "name": "explicit_pto_days_stated",
+    "inputs": {
+      "posting_title": "Staff Software Engineer, Platform",
+      "posting_company": "Fictional Accrued PTO Co.",
+      "posting_location": "Remote (US)",
+      "posting_remote": true,
+      "posting_description": "Own the technical direction of our core platform team. We offer 20 days of accrued PTO per year in addition to standard holidays.",
+      "posting_compensation": "$200,000 - $235,000",
+      "company_research_text": "No reliable recent information found.",
+      "tier1_result": "pass"
+    },
+    "expected": {
+      "dealbreaker": false,
+      "pto_days_estimate": 20
+    }
+  },
+  {
+    "name": "unlimited_pto_no_days_guessed",
+    "inputs": {
+      "posting_title": "Staff Software Engineer, Platform",
+      "posting_company": "Fictional Unlimited No Baseline Co.",
+      "posting_location": "Remote (US)",
+      "posting_remote": true,
+      "posting_description": "Own the technical direction of our core platform team. We offer unlimited PTO — take what you need, no set number of days.",
+      "posting_compensation": "$200,000 - $235,000",
+      "company_research_text": "No reliable recent information found.",
+      "tier1_result": "pass"
+    },
+    "expected": {
+      "dealbreaker": false,
+      "pto_type": "flex_unlimited",
+      "pto_days_estimate": null
+    }
+  },
+  {
+    "name": "ai_titled_generic_api_work",
+    "inputs": {
+      "posting_title": "AI Engineer",
+      "posting_company": "Fictional SaaS Integrations Co.",
+      "posting_location": "Remote (US)",
+      "posting_remote": true,
+      "posting_description": "As an AI Engineer, you will build REST API integrations between our product and third-party SaaS tools, write CRUD endpoints, and maintain our API gateway configuration. No machine learning or LLM work is involved in this role.",
+      "posting_compensation": "$200,000 - $230,000",
+      "company_research_text": "No reliable recent information found.",
+      "tier1_result": "pass"
+    },
+    "expected": {
+      "dealbreaker": false,
+      "ai_title_substance": "generic_role_relabeled"
+    }
+  }
+]
