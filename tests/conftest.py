@@ -3,10 +3,12 @@
 import os
 
 # Unit tests must run with no real credentials and no API calls. Settings
-# requires GOOGLE_API_KEY for the selected model at import time, and the
+# requires a provider key for the selected model at import time, and the
 # module-level Agent construction may create a provider client that also
-# wants a key — set a dummy value before anything under agent/ is imported.
-# setdefault() leaves a real key untouched if one is present.
+# wants a key — set dummy values before anything under agent/ is imported.
+# setdefault() leaves real keys untouched if they are present.
+os.environ.setdefault("ANTHROPIC_API_KEY", "unit-test-dummy-key")
+os.environ.setdefault("OPENAI_API_KEY", "unit-test-dummy-key")
 os.environ.setdefault("GOOGLE_API_KEY", "unit-test-dummy-key")
 
 import importlib  # noqa: E402

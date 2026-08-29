@@ -1,20 +1,20 @@
 # CLAUDE.md
 
-A daily job-scanning agent: fetches postings from multiple sources, filters cheaply (no LLM), scores survivors against a configurable candidate profile with Gemini, enriches scoring with cached per-company research, and emails a ranked digest. The code is the source of truth for current behavior; this file covers what isn't obvious from reading it.
+A daily job-scanning agent: fetches postings from multiple sources, filters cheaply (no LLM), scores survivors against a configurable candidate profile with an LLM, enriches scoring with cached per-company research, and emails a ranked digest. The code is the source of truth for current behavior; this file covers what isn't obvious from reading it.
 
 ## Commands
 
 ```bash
 uv sync --group dev                     # install deps
 uv run pytest                           # unit tests only — no network, no API key needed
-uv run pytest -m eval                   # evals — real Gemini calls, costs money
+uv run pytest -m eval                   # evals — real model calls, costs money
 uv run pytest -m live                   # live integration tests — real external APIs, no LLM calls
 uv run ruff check .                     # lint
 uv run ruff format .                    # format
 uv run python scripts/run_pipeline.py   # run the real pipeline (real DB, real send)
 ```
 
-`asyncio_default_test_loop_scope = "session"` in `pyproject.toml` (not the pytest-asyncio default of `"function"`) — `pydantic-ai`'s Google model caches a persistent httpx client across calls, which breaks under a fresh event loop per test when two real eval tests run back to back in one session. Don't revert this without re-verifying `-m eval` still works with more than one real-call test in the file.
+`asyncio_default_test_loop_scope = "session"` in `pyproject.toml` (not the pytest-asyncio default of `"function"`) — `pydantic-ai`'s Google model (the default) caches a persistent httpx client across calls, which breaks under a fresh event loop per test when two real eval tests run back to back in one session. Don't revert this without re-verifying `-m eval` still works with more than one real-call test in the file.
 
 ## The candidate profile (`profile.yaml`)
 
@@ -49,7 +49,7 @@ company_research -> tier2_score -> post_process -> digest_build -> deliver -> pe
 Three markers, each progressively more expensive — default `pytest` run excludes both `eval` and `live` (`addopts` in `pyproject.toml`):
 
 - **`tests/`** (default): fast, deterministic, zero network, zero cost. TestModel-overridden automatically for every `Agent` under `agent.agents` (`tests/conftest.py`'s autouse fixture) — don't remove that override or a unit test could silently hit a real model. **JobSpy needs its own handling**: `python-jobspy` doesn't go through `httpx`, so `httpx.MockTransport` never intercepts it — mock by monkeypatching `agent.sources.jobspy_source.scrape_jobs` directly (see `tests/test_pipeline_integration.py`'s `mock_jobspy` fixture). Forgetting this once made routine `pytest` runs silently scrape real job boards for 55+ seconds.
-- **`evals/`** (`-m eval`): real Gemini calls, costs money. `evals/fixtures/jobs.json` drives the labeled pass/fail dataset eval; `evals/test_llm_judge.py` grades reasoning *quality* (not just field values) using `AGENT_JUDGE_MODEL` — a more capable Gemini tier than the one being scored, to avoid self-assessment bias. Every fixture's expected verdict is written against `profile.example.yaml`'s comp bars and dealbreakers (via the `scoring_system_prompt` fixture in `evals/conftest.py`) — change those numbers in the example file and the fixtures need updating too.
+- **`evals/`** (`-m eval`): real model calls, costs money. `evals/fixtures/jobs.json` drives the labeled pass/fail dataset eval; `evals/test_llm_judge.py` grades reasoning *quality* (not just field values) using `AGENT_JUDGE_MODEL` — a more capable tier than the one being scored, to avoid self-assessment bias. Every fixture's expected verdict is written against `profile.example.yaml`'s comp bars and dealbreakers (via the `scoring_system_prompt` fixture in `evals/conftest.py`) — change those numbers in the example file and the fixtures need updating too.
 - **`tests/test_live_integration.py`** (`-m live`): real network calls to real external APIs (Greenhouse/Lever/Ashby/Adzuna/Tavily/JobSpy/Postmark), no LLM calls. Postmark's test uses the documented `POSTMARK_API_TEST` token — validated like a real send but never delivered, safe to run repeatedly. Exists because every source module was originally built against documentation (or, for Ashby, a lossy AI-summarized fetch of documentation) rather than a live response, and that drifted from reality more than once (Ashby's `applyUrl` vs `jobUrl`, an undocumented-but-present `id` field, Adzuna's `category` needing a real tag from its own `/categories` endpoint, not free text).
 
 ## Testability hooks
@@ -58,4 +58,4 @@ Three markers, each progressively more expensive — default `pytest` run exclud
 
 ## Configuration
 
-`agent/config.py` (`Settings`) is Gemini-only: `GOOGLE_API_KEY` is the sole provider key, and `check_provider_key` validates just that. `model` / `judge_model` default to `google:*` strings, overridable via `AGENT_MODEL` / `AGENT_JUDGE_MODEL` in `.env`. Other secrets: `TAVILY_API_KEY`, `ADZUNA_APP_ID` + `ADZUNA_API_KEY`, `POSTMARK_SERVER_TOKEN`, `AGENT_EMAIL_FROM`/`AGENT_EMAIL_TO`, optional `LOGFIRE_TOKEN`. Everything non-secret is in `profile.yaml`. `USAGE_LIMITS` is a Python constant near the top of `agent/agents/single.py` and `agent/agents/company_research.py`, not an env var.
+`agent/config.py` (`Settings`) is model-agnostic — `AGENT_MODEL` / `AGENT_JUDGE_MODEL` take any Pydantic AI model string. `check_provider_key` gives a fail-fast error only for the three common cloud providers (`anthropic`/`openai`/`google`) and only for the agent model; any other provider prefix is left for its own SDK to validate at call time. Defaults are `google:*` so a single `GOOGLE_API_KEY` runs everything including `-m eval`. `tests/conftest.py` sets dummy `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GOOGLE_API_KEY` before importing anything under `agent/`. Other secrets: `TAVILY_API_KEY`, `ADZUNA_APP_ID` + `ADZUNA_API_KEY`, `POSTMARK_SERVER_TOKEN`, `AGENT_EMAIL_FROM`/`AGENT_EMAIL_TO`, optional `LOGFIRE_TOKEN`. Everything non-secret is in `profile.yaml`. `USAGE_LIMITS` is a Python constant near the top of `agent/agents/single.py` and `agent/agents/company_research.py`, not an env var.

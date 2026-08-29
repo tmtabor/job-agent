@@ -23,9 +23,9 @@ from agent.models import JobEvaluation
 
 logger = get_logger(__name__)
 
-# Gemini's free tier has no prompt caching — Tier 1 filtering upstream is what
-# keeps call volume manageable, not a big request_limit here. One posting per
-# call, no tool loop, so this only needs to cover the single round trip.
+# Tier 1 filtering upstream is what keeps call volume (and cost) manageable,
+# not a big request_limit here. One posting per call, no tool loop, so this
+# only needs to cover the single round trip plus a validation retry or two.
 USAGE_LIMITS = UsageLimits(request_limit=4, total_tokens_limit=20_000)
 
 

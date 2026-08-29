@@ -2,14 +2,16 @@
 
 [![CI](https://github.com/tmtabor/job-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/tmtabor/job-agent/actions/workflows/ci.yml)
 
-A daily job-scanning agent. Pulls postings from multiple sources, filters out irrelevant ones cheaply (no LLM), scores the rest against a candidate profile using Gemini, enriches scoring with cached per-company research (PTO, stability, RTO reality, dealbreaker screening), and emails a ranked digest every morning.
+A daily job-scanning agent. Pulls postings from multiple sources, filters out irrelevant ones cheaply (no LLM), scores the rest against a candidate profile using an LLM, enriches scoring with cached per-company research (PTO, stability, RTO reality, dealbreaker screening), and emails a ranked digest every morning.
+
+Built on [agent-template](https://github.com/tmtabor/agent-template).
 
 > **A personal tool, published as a reference.** This is not a supported product. The scoring rubric, dealbreakers, comp bars, and source choices reflect one person's job search — `profile.example.yaml` is a fictional stand-in. Fork it, rewrite `profile.yaml`, and run your own. BSD-3-Clause; do what you like with it.
 
 ## Stack
 
 - Python 3.13, `uv`
-- Pydantic AI (two single-shot agents: Tier 2 scoring, company research) + `pydantic-evals`
+- Pydantic AI (two single-shot agents: Tier 2 scoring, company research) + `pydantic-evals` — model-agnostic; any Pydantic AI model string works, default `google:gemini-3.1-flash-lite`
 - SQLite for dedupe/state/caching
 - Greenhouse, Lever, Ashby (direct ATS boards), Adzuna (breadth aggregator), JobSpy/LinkedIn+Indeed+Glassdoor+ZipRecruiter (scraper, best-effort)
 - Tavily (company research search) + Postmark (email delivery)
@@ -42,9 +44,9 @@ Secrets are read from the environment (see `.env.example`):
 
 | Variable | Purpose |
 |---|---|
-| `GOOGLE_API_KEY` | Gemini access — both scoring and company research use it |
-| `AGENT_MODEL` | Scoring model, e.g. `google:gemini-3.1-flash-lite` |
-| `AGENT_JUDGE_MODEL` | LLM-judge eval model — a more capable Gemini tier than `AGENT_MODEL` |
+| `GOOGLE_API_KEY` / `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` | Provider key for whichever `AGENT_MODEL` selects. Only the one you use is required; other Pydantic AI providers work too — set their own standard env var. Validated at import time for these three. |
+| `AGENT_MODEL` | Any Pydantic AI model string. Default `google:gemini-3.1-flash-lite` — a small/fast model, since Tier 2 scoring is high-volume structured classification. |
+| `AGENT_JUDGE_MODEL` | LLM-judge eval model. Default `google:gemini-3.1-pro-preview` so one `GOOGLE_API_KEY` covers `-m eval` too; point it at another family if you have that key. |
 | `TAVILY_API_KEY` | Company research web search |
 | `ADZUNA_APP_ID`, `ADZUNA_API_KEY` | Adzuna breadth source — two separate credentials, not one |
 | `POSTMARK_SERVER_TOKEN` | Email delivery |
@@ -59,7 +61,7 @@ Three tiers, increasingly expensive:
 
 ```bash
 uv run pytest              # unit tests — fast, no network, no cost (default)
-uv run pytest -m eval       # real Gemini calls against labeled fixtures — costs money
+uv run pytest -m eval       # real model calls against labeled fixtures — costs money
 uv run pytest -m live       # real calls to every external API (no LLM) — free but not instant
 ```
 
@@ -87,8 +89,8 @@ fetch (Greenhouse/Lever/Ashby/Adzuna/JobSpy)
      seed_companies on the next run)
   -> cross-source dedupe (same real job from two sources -> one entry)
   -> Tier 1 filter (no LLM: title/description/location/dealbreaker-blocklist)
-  -> company research (cached, Tavily + Gemini, per unique company)
-  -> Tier 2 scoring (Gemini, structured JobEvaluation per posting)
+  -> company research (cached, Tavily + LLM, per unique company)
+  -> Tier 2 scoring (LLM, structured JobEvaluation per posting)
   -> post-processing (hard-reject rules, bucket into main/unstated-comp/ambiguous-level)
   -> digest (HTML, ranked, company breakdown at top)
   -> deliver (Postmark)
