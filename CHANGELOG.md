@@ -12,8 +12,10 @@ Initial public release.
 
 - Daily GitHub Actions pipeline that fetches job postings from Greenhouse, Lever, Ashby,
   Adzuna, and JobSpy; filters cheaply with no LLM (Tier 1); scores survivors against a
-  candidate profile with Gemini (Tier 2); enriches scoring with cached per-company research
+  candidate profile with an LLM (Tier 2); enriches scoring with cached per-company research
   (PTO, stability, RTO reality, dealbreaker screening); and emails a ranked digest.
+- Model-agnostic: `AGENT_MODEL` takes any Pydantic AI model string (default
+  `google:gemini-3.1-flash-lite`), validated at import time for the common cloud providers.
 - All per-search configuration — the candidate summary, compensation floors, dealbreakers,
   target titles and locations, and the tracked-company seed list — in a single gitignored
   `profile.yaml`, validated on load. `profile.example.yaml` ships a fictional reference.
@@ -22,7 +24,7 @@ Initial public release.
 - SQLite state (dedupe history, cached company research, dealbreaker blocklist, expansion
   attempts), gitignored and rebuilt on first run; carried between CI runs via `actions/cache`.
 - Three test tiers: fast unit tests against `TestModel` and mocked HTTP (no key, no cost),
-  `-m eval` (real Gemini calls against labeled fixtures), and `-m live` (real external APIs,
+  `-m eval` (real model calls against labeled fixtures), and `-m live` (real external APIs,
   no LLM).
 - Logfire instrumentation with automatic console fallback.
 
