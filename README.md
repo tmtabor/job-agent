@@ -1,5 +1,7 @@
 # job-agent
 
+[![CI](https://github.com/tmtabor/job-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/tmtabor/job-agent/actions/workflows/ci.yml)
+
 A daily job-scanning agent. Pulls postings from multiple sources, filters out irrelevant ones cheaply (no LLM), scores the rest against a candidate profile using Gemini, enriches scoring with cached per-company research (PTO, stability, RTO reality, dealbreaker screening), and emails a ranked digest every morning.
 
 > **A personal tool, published as a reference.** This is not a supported product. The scoring rubric, dealbreakers, comp bars, and source choices reflect one person's job search — `profile.example.yaml` is a fictional stand-in. Fork it, rewrite `profile.yaml`, and run your own. BSD-3-Clause; do what you like with it.
@@ -62,6 +64,19 @@ uv run pytest -m live       # real calls to every external API (no LLM) — free
 ```
 
 The `eval` and `live` fixtures bind to `profile.example.yaml`, so no personal config is needed to run them.
+
+```bash
+uv run ruff check .          # lint
+uv run ruff format .         # format
+```
+
+## Observability
+
+Every agent run and model request is traced via `logfire.instrument_pydantic_ai()`, and each pipeline run is wrapped in a Logfire span. Set `LOGFIRE_TOKEN` to send traces to Logfire cloud; leave it unset and everything prints to the console — there's no separate dev-mode flag. `USAGE_LIMITS` constants near the top of `agent/agents/single.py` and `agent/agents/company_research.py` cap per-call model round-trips and token spend.
+
+## Customizing
+
+Everything you'd tune lives in `profile.yaml` (see `profile.example.yaml` for every field). The scoring rubric itself — the generic parts, not the personal ones — is `agent/prompts/system.txt`, a `string.Template` filled from the profile at runtime; the company-research prompt is `agent/prompts/company_research.txt`. `CLAUDE.md` explains the query-design and extraction choices that aren't obvious from the code.
 
 ## How the pipeline fits together
 
