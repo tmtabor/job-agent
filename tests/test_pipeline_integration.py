@@ -72,6 +72,26 @@ def mock_jobspy(monkeypatch):
     monkeypatch.setattr(jobspy_source, "scrape_jobs", fake_scrape_jobs)
 
 
+@pytest.fixture(autouse=True)
+def force_optional_credentials(monkeypatch):
+    """Exercise the Adzuna, Tavily, and Postmark code paths regardless of the
+    ambient environment. Without this, a run with no local .env skips those
+    branches (`if settings.adzuna_app_id ...`) and the self-expansion and
+    email-subject tests can't reach what they assert on. Every endpoint is
+    still mocked via httpx.MockTransport."""
+    from agent.config import settings
+
+    for attr, value in {
+        "adzuna_app_id": "test-app-id",
+        "adzuna_api_key": "test-api-key",
+        "tavily_api_key": "test-tavily-key",
+        "postmark_server_token": "test-postmark-token",
+        "email_from": "digest@example.com",
+        "email_to": "you@example.com",
+    }.items():
+        monkeypatch.setattr(settings, attr, value)
+
+
 GREENHOUSE_SLUG = "fictionalgreenhouseco"
 LEVER_SLUG = "fictionalleverco"
 ASHBY_SLUG = "fictionalashbyco"
